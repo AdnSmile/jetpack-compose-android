@@ -13,10 +13,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Device
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vvwxx.bangkit.hellojetpackcompose.ui.theme.HelloJetpackComposeTheme
+
+private val sampleName = listOf(
+    "Andre",
+    "Desta",
+    "Parto",
+    "Wendy",
+    "Komeng",
+    "Raffi Ahmad",
+    "Andhika Pratama",
+    "Vincent Ryan Rompies"
+)
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,6 +71,37 @@ fun Greeting(name: String) {
             )
             Text(text = "Welcome to Dicoding!")
         }
+    }
+}
+
+@Composable
+fun GreetingList(names: List<String>) {
+    if (names.isNotEmpty()) {
+        Column {
+            for (name in names) {
+                Greeting(name)
+            }
+        }
+    } else {
+        Text("No people to great :(")
+    }
+}
+
+@Composable
+fun HelloJetPackComposeApp() {
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colors.background
+    ) {
+        GreetingList(sampleName)
+    }
+}
+
+@Preview(showBackground = true, device = Devices.PIXEL_4)
+@Composable
+fun HelloJetpackComposeAppPreview() {
+    HelloJetpackComposeTheme {
+        HelloJetPackComposeApp()
     }
 }
 
