@@ -1,5 +1,6 @@
 package com.vvwxx.bangkit.hellojetpackcompose
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -28,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import com.vvwxx.bangkit.hellojetpackcompose.ui.theme.HelloJetpackComposeTheme
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.text.font.FontStyle
 
 private val sampleName = listOf(
     "Andre",
@@ -69,35 +71,47 @@ fun Greeting(name: String) {
         )
     )
 
-    Row(
-        // untuk mengatur jarak komponen pada row
-        modifier = Modifier.padding(8.dp),
-        verticalAlignment = Alignment.CenterVertically
+    Card(
+        backgroundColor = MaterialTheme.colors.primary,
+        shape = MaterialTheme.shapes.medium,
+        modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
     ) {
-        Image(
-            painter = painterResource(R.drawable.jetpack_compose),
-            contentDescription = "Logo Jetpack Compose",
-            modifier = Modifier.size(animatedSizeDp)
-        )
-
-        Spacer(modifier = Modifier.width(8.dp))
-
-        Column(modifier = Modifier.weight(1f)){
-            Text(
-                text = "Hello $name!",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
+        Row(
+            // untuk mengatur jarak komponen pada row
+            modifier = Modifier.padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = painterResource(R.drawable.jetpack_compose),
+                contentDescription = "Logo Jetpack Compose",
+                modifier = Modifier.size(animatedSizeDp)
             )
-            Text(text = "Welcome to Dicoding!")
-        }
 
-        IconButton(onClick = { isExpanded = !isExpanded }) {
-            Icon(
-                imageVector = if (isExpanded) Icons.Filled.ExpandLess else Icons.Outlined.ExpandMore,
-                contentDescription = if (isExpanded) "Show less" else "Show more"
-            )
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Column(modifier = Modifier.weight(1f)){
+                Text(
+                    text = "Hello $name!",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+                Text(
+                    text = "Welcome to Dicoding!",
+                    style = MaterialTheme.typography.body1.copy(
+                        fontStyle = FontStyle.Italic
+                    )
+                )
+            }
+
+            IconButton(onClick = { isExpanded = !isExpanded }) {
+                Icon(
+                    imageVector = if (isExpanded) Icons.Filled.ExpandLess else Icons.Outlined.ExpandMore,
+                    contentDescription = if (isExpanded) "Show less" else "Show more"
+                )
+            }
         }
     }
+
 }
 
 @Composable
@@ -124,6 +138,7 @@ fun HelloJetPackComposeApp() {
 }
 
 @Preview(showBackground = true, device = Devices.PIXEL_4)
+@Preview(showBackground = true, device = Devices.PIXEL_4, uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun HelloJetpackComposeAppPreview() {
     HelloJetpackComposeTheme {
@@ -132,6 +147,7 @@ fun HelloJetpackComposeAppPreview() {
 }
 
 @Preview(showBackground = true)
+@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun DefaultPreview() {
     HelloJetpackComposeTheme {
