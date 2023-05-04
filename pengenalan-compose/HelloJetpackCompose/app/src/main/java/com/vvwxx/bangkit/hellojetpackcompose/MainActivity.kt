@@ -3,8 +3,13 @@ package com.vvwxx.bangkit.hellojetpackcompose
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandLess
@@ -45,7 +50,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Greeting("Nessa")
+                    HelloJetPackComposeApp()
                 }
             }
         }
@@ -56,6 +61,14 @@ class MainActivity : ComponentActivity() {
 fun Greeting(name: String) {
     var isExpanded by remember { mutableStateOf(false) }
 
+    val animatedSizeDp by animateDpAsState(
+        targetValue = if (isExpanded) 120.dp else 80.dp,
+        animationSpec = spring( // mengatur animasi yang tampil
+            dampingRatio = Spring.DampingRatioNoBouncy,
+            stiffness = Spring.StiffnessLow
+        )
+    )
+
     Row(
         // untuk mengatur jarak komponen pada row
         modifier = Modifier.padding(8.dp),
@@ -64,7 +77,7 @@ fun Greeting(name: String) {
         Image(
             painter = painterResource(R.drawable.jetpack_compose),
             contentDescription = "Logo Jetpack Compose",
-            modifier = Modifier.size(80.dp)
+            modifier = Modifier.size(animatedSizeDp)
         )
 
         Spacer(modifier = Modifier.width(8.dp))
@@ -90,8 +103,8 @@ fun Greeting(name: String) {
 @Composable
 fun GreetingList(names: List<String>) {
     if (names.isNotEmpty()) {
-        Column {
-            for (name in names) {
+        LazyColumn {
+            items(names) { name ->
                 Greeting(name)
             }
         }
