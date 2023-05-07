@@ -1,6 +1,7 @@
 package com.vvwxx.bangkit.jetheroes
 
 import androidx.compose.animation.*
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -23,12 +24,20 @@ import coil.compose.AsyncImage
 import com.vvwxx.bangkit.jetheroes.model.HeroesData
 import com.vvwxx.bangkit.jetheroes.ui.theme.JetHeroesTheme
 import androidx.compose.runtime.*
+import androidx.compose.ui.text.style.TextAlign
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.vvwxx.bangkit.jetheroes.data.HeroRepository
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun JetHeroesApp(
     modifier: Modifier = Modifier,
+    viewModel: JetHeroesViewModel = viewModel(factory = ViewModelFactory(HeroRepository()))
 ) {
+
+    val groupedHeroes by viewModel.groupedHeroes.collectAsState()
+
     Box(modifier = modifier) {
 
         val scope = rememberCoroutineScope() // menjalankan suspend function di dalam Composable function.
@@ -41,13 +50,22 @@ fun JetHeroesApp(
             state = listState,
             contentPadding = PaddingValues(bottom = 80.dp)
         ) {
-            items(HeroesData.heroes, key = { it.id }) { hero ->
-                HeroListItem(
-                    name = hero.name,
-                    photoUrl = hero.photoUrl,
-                    modifier = Modifier.fillMaxWidth()
-                )
+
+            groupedHeroes.forEach { (initial, heroes) ->
+                stickyHeader {
+                    CharacterHeader(initial)
+                }
+
+                items(heroes, key = { it.id }) { hero ->
+                    HeroListItem(
+                        name = hero.name,
+                        photoUrl = hero.photoUrl,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
             }
+
+
         }
 
         AnimatedVisibility(
@@ -119,6 +137,27 @@ fun ScrollToTopButtom(
         Icon(
             imageVector = Icons.Filled.KeyboardArrowUp,
             contentDescription = null,
+        )
+    }
+}
+
+@Composable
+fun CharacterHeader(
+    char: Char,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        color = MaterialTheme.colors.primary,
+        modifier = modifier
+    ) {
+        Text(
+            text = char.toString(),
+            fontWeight = FontWeight.Black,
+            color = Color.White,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
         )
     }
 }
