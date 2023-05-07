@@ -1,5 +1,7 @@
 package com.dicoding.jetreward
 
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -22,6 +24,7 @@ import com.dicoding.jetreward.ui.screen.cart.CartScreen
 import com.dicoding.jetreward.ui.screen.home.HomeScreen
 import com.dicoding.jetreward.ui.screen.profile.ProfileScreen
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavType
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
@@ -57,12 +60,20 @@ fun JetRewardApp(
                     }
                 )
             }
+
             composable(Screen.Cart.route) {
-                CartScreen()
+                val context = LocalContext.current
+                CartScreen(
+                    onOrderButtonClicked = { message ->
+                        shareOrder(context, message)
+                    }
+                )
             }
+
             composable(Screen.Profile.route) {
                 ProfileScreen()
             }
+
             composable(
                 route = Screen.DetailReward.route,
                 arguments = listOf(navArgument("rewardId") { type = NavType.LongType}),
@@ -143,6 +154,21 @@ private fun BottomBar(
             }
         }
     }
+}
+
+private fun shareOrder(context: Context, summary: String) {
+    val intent = Intent(Intent.ACTION_SEND).apply {
+        type = "text/plain"
+        putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.dicoding_reward))
+        putExtra(Intent.EXTRA_TEXT, summary)
+    }
+
+    context.startActivity(
+        Intent.createChooser(
+            intent,
+            context.getString(R.string.dicoding_reward)
+        )
+    )
 }
 
 @Preview(showBackground = true)
